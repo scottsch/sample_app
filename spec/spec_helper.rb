@@ -24,4 +24,17 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+
+  def create_user!
+    User.create! :name                  => "Michael Hartl",
+                 :email                 => "mhartl@example.com",
+                 :password              => "foobar",
+                 :password_confirmation => "foobar"
+      # I use create! instead of the Factory in the Rails tutorial.
+      # I don't see how FactoryGirl is any better than this.
+  end
+
+  def test_sign_in(user)
+    controller.sign_in(user)
+  end
 end

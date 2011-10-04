@@ -9,6 +9,8 @@ describe UsersController do
                            :email                 => "mhartl@example.com",
                            :password              => "foobar",
                            :password_confirmation => "foobar"
+        # I use create! instead of the Factory in the Rails tutorial.
+        # I don't see how FactoryGirl is any better than this.
     end
 
     it "should be successful" do
@@ -83,6 +85,11 @@ describe UsersController do
         lambda do
           post :create, :user => @attr
         end.should change(User, :count).by(1)
+      end
+
+      it "should sign the user in" do
+        post :create, :user => @attr
+        controller.should be_signed_in
       end
 
       it "should redirect to the user show page" do
