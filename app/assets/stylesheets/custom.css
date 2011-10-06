@@ -145,6 +145,16 @@ div.field, div.actions {
   margin-bottom: 10px;
 }
 
+/* User index */
+
+ul.users {
+  margin-top: 1em;
+}
+
+.users li {
+  list-style: none;
+}
+
 /* Errors */
 
 .field_with_errors {

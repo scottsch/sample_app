@@ -25,11 +25,12 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
-  def create_user!
-    User.create! :name                  => "Michael Hartl",
-                 :email                 => "mhartl@example.com",
-                 :password              => "foobar",
-                 :password_confirmation => "foobar"
+  def create_user!(override = {})
+    user = { :name                  => "Michael Hartl",
+             :email                 => "mhartl@example.com",
+             :password              => "foobar",
+             :password_confirmation => "foobar" }
+    User.create!(user.merge(override))
       # I use create! instead of the Factory in the Rails tutorial.
       # I don't see how FactoryGirl is any better than this.
   end
