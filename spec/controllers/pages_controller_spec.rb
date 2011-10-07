@@ -8,34 +8,34 @@ describe PagesController do
   end
 
   describe "GET 'home'" do
-    it "should be successful" do
-      get 'home'
-      response.should be_success
-    end
+    describe "when not signed in" do
+      before(:each) do
+        get :home
+      end
 
-    it "should have the right title" do
-      get 'home'
-      response.should have_selector("title",
-                                    :content => @base_title + " | Home")
-    end
+      it "should be successful" do
+        response.should be_success
+      end
 
-    describe "for unsigned-in users" do
+      it "should have the right title" do
+        response.should have_selector("title",
+                                      :content => @base_title + " | Home")
+      end
+
       it "should have a sign-in button" do
-        get 'home'
         response.should have_selector("a",
                                       :content => "Sign up now!")
       end
 
       it "should not ask for a micropost" do
-        get 'home'
         response.should_not have_selector("h1",
                                           :content => "What's up?")
       end
     end
 
-    describe "for signed-in users" do
+    describe "when signed in" do
       before(:each) do
-        test_sign_in(create_user!)
+        @user = test_sign_in(create_user!)
       end
 
       it "should not have a sign-in button" do
@@ -48,6 +48,16 @@ describe PagesController do
         get 'home'
         response.should have_selector("h1",
                                       :content => "What's up?")
+      end
+
+      it "should have the right follower/following counts" do
+        other_user = create_user!(:email => "follower@example.net")
+        other_user.follow!(@user)
+        get :home
+        response.should have_selector("a", :href => following_user_path(@user),
+                                           :content => "0 following")
+        response.should have_selector("a", :href => followers_user_path(@user),
+                                           :content => "1 follower")
       end
     end
   end
