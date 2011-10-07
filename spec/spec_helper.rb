@@ -26,13 +26,23 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   def create_user!(override = {})
-    user = { :name                  => "Michael Hartl",
-             :email                 => "mhartl@example.com",
-             :password              => "foobar",
-             :password_confirmation => "foobar" }
-    User.create!(user.merge(override))
+    user_data = { :name                  => "Michael Hartl",
+                  :email                 => "mhartl@example.com",
+                  :password              => "foobar",
+                  :password_confirmation => "foobar" }
+    User.create!(user_data.merge(override))
       # I use create! instead of the Factory in the Rails tutorial.
       # I don't see how FactoryGirl is any better than this.
+  end
+
+  def create_micropost!(user, override = {})
+    micropost_data = { :content => "Foo bar" }
+    micropost = user.microposts.create!(micropost_data.merge(override))
+    if not override[:created_at].nil?
+      micropost.created_at = override[:created_at]
+      micropost.save
+    end
+    return micropost
   end
 
   def test_sign_in(user)

@@ -52,12 +52,7 @@ describe UsersController do
 
   describe "GET 'show'" do
     before(:each) do
-      @user = User.create! :name                  => "Michael Hartl",
-                           :email                 => "mhartl@example.com",
-                           :password              => "foobar",
-                           :password_confirmation => "foobar"
-        # I use create! instead of the Factory in the Rails tutorial.
-        # I don't see how FactoryGirl is any better than this.
+      @user = create_user!
     end
 
     it "should be successful" do
@@ -83,6 +78,14 @@ describe UsersController do
     it "should have a profile image" do
       get :show, :id => @user
       response.should have_selector("h1>img", :class => "gravatar")
+    end
+
+    it "should show the user's microposts" do
+      mp1 = create_micropost!(@user, :content => "Foo bar")
+      mp2 = create_micropost!(@user, :content => "Baz quux")
+      get :show, :id => @user
+      response.should have_selector("span.content", :content => mp1.content)
+      response.should have_selector("span.content", :content => mp2.content)
     end
   end
 
